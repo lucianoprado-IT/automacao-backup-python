@@ -171,77 +171,56 @@ if not email_password:
         Sistema de Backup Automatizado - Verint
         """
     
-    msg.attach(MIMEText(corpo, 'plain'))
+        msg.attach(MIMEText(corpo, 'plain'))
     
     # Envia o email
-    server = smtplib.SMTP(smtp_server, smtp_port)
-    server.starttls()
-    server.login(email_from, email_password)
-    server.send_message(msg)
-    server.quit()
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(email_from, email_password)
+        server.send_message(msg)
+        server.quit()
     
-    logger.info(f"Email de notificação enviado para: {email_to}")
+        logger.info(f"Email de notificação enviado para: {email_to}")
     
-except Exception as e:
-    logger.error(f"Erro ao enviar email: {str(e)}")
+    except Exception as e:
+        logger.error(f"Erro ao enviar email: {str(e)}")
 
-def main():
-"""Função principal"""
-# Configura logging
-logger = configurar_log()
-logger.info("="*60)
-logger.info("INICIANDO SISTEMA DE BACKUP AUTOMATIZADO")
-logger.info("="*60)
+    def main():
+        """Função principal"""
+    # Configura logging
+        logger = configurar_log()
+        logger.info("="*60)
+        logger.info("INICIANDO SISTEMA DE BACKUP AUTOMATIZADO")
+        logger.info("="*60)
 
-# Carrega configurações
-config = carregar_config()
-source = config['DEFAULT']['source_path']
-destiny = config['DEFAULT']['backup_path']
-retention_days = config['DEFAULT']['retention_days']
+    # Carrega configurações
+    config = carregar_config()
+    source = config['DEFAULT']['source_path']
+    destiny = config['DEFAULT']['backup_path']
+    retention_days = config['DEFAULT']['retention_days']
 
-logger.info(f"Origem: {source}")
-logger.info(f"Destino: {destiny}")
+    logger.info(f"Origem: {source}")
+    logger.info(f"Destino: {destiny}")
 
-# Executa o backup
-resultado = executar_backup(source, destiny, logger)
+    # Executa o backup
+    resultado = executar_backup(source, destiny, logger)
 
-if resultado and resultado['success']:
+    if resultado and resultado['success']:
     # Limpa backups antigos
-    limpar_backups_antigos(destiny, retention_days, logger)
+        limpar_backups_antigos(destiny, retention_days, logger)
     
     # Envia notificação
-    enviar_notificacao_email(config, resultado, logger)
+        enviar_notificacao_email(config, resultado, logger)
     
-    logger.info("="*60)
-    logger.info("BACKUP FINALIZADO COM SUCESSO")
-    logger.info("="*60)
-else:
-    logger.error("="*60)
-    logger.error("BACKUP FINALIZADO COM ERRO")
-    logger.error("="*60)
+        logger.info("="*60)
+        logger.info("BACKUP FINALIZADO COM SUCESSO")
+        logger.info("="*60)
+    else:
+        logger.error("="*60)
+        logger.error("BACKUP FINALIZADO COM ERRO")
+        logger.error("="*60)
     
     # Envia notificação de erro
-    enviar_notificacao_email(config, resultado, logger)
-if name == "main":
-main()
-
-4. Commit
-
-### Passo 12: Crie o arquivo config.ini
-
-1. **"Add file"** → **"Create new file"**
-2. Nome: `config.ini`
-3. Cole:
-````ini
-[DEFAULT]
-source_path = C:\Verint\Data
-backup_path = D:\Backups
-retention_days = 30
-enable_email = False
-
-[EMAIL]
-smtp_server = smtp.gmail.com
-smtp_port = 587
-email_from = seuemail@gmail.com
-email_to = suporte@empresa.com
-email_password = 
+        enviar_notificacao_email(config, resultado, logger)
+    if name == "main":
+    main()
